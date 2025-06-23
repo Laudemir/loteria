@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+
+
+    <!-- res/values/colors.xml (modo claro) -->
+
+        <color name="background_color">#0D47A1</color> <!-- azul escuro -->
+        <color name="text_primary">#FFFFFF</color>     <!-- branco -->
+        <color name="button_mega">#388E3C</color>      <!-- verde -->
+        <color name="button_milhar">#F57C00</color>    <!-- laranja -->
+
+
+</resources>

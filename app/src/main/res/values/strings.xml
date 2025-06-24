@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">Loteria</string>
     <string name="escolha_um_palpite">Escolha um palpite!</string>
-    <string name="gerar_lotofacil">Gerar Lotofacil</string>
-    <string name="gerar_milhar">Gerar Milhar</string>
+    <string name="gerar_lotofacil">Gerar um Jogo</string>
+    <string name="gerar_milhar">Gerar Somente uma Milhar</string>
+    <string name="designed_by_laudemir">Designed by Laudemir</string>
 </resources>

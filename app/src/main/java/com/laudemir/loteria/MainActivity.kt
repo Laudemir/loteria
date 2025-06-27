@@ -4,15 +4,14 @@ import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.laudemir.loteria.util.PersistirDados
 import kotlin.random.Random
 
 class MainActivity : AppCompatActivity() {
 
-    private lateinit var mega: TextView
+    private lateinit var jogo: TextView
     private lateinit var gerar: Button
-    private lateinit var milhar: TextView
     private lateinit var gerarMilhar: Button
     private lateinit var nr_total_cartela: EditText
     private lateinit var nr_sorteados: EditText
@@ -20,49 +19,81 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        // Inicializar as views
+        inicializarViews()
+        // Inicializar os listeners
+        inicilizarListeners()
+        // Recuperar os dados
+        recuperarDados()
+    }
 
-        mega = findViewById(R.id.megaTextID)
-        milhar = findViewById(R.id.megaTextID) // Usando o mesmo TextView, como no código original
+    // Função para inicializar as views
+    private fun inicializarViews(){
+        jogo = findViewById(R.id.textResult)
         gerar = findViewById(R.id.megaButtonID)
         gerarMilhar = findViewById(R.id.milharButtonID)
         nr_total_cartela = findViewById(R.id.edt_numero_por_cartela)
         nr_sorteados = findViewById(R.id.edt_numeros_sorteados)
+    }
 
-        recuperarDados()
-
+    // Função para inicializar os listeners
+    private fun inicilizarListeners(){
+        // Listener para o botão de gerar números
         gerar.setOnClickListener {
-            val n_cartela = nr_total_cartela.text.toString().toIntOrNull()
-            val n_sorteio = nr_sorteados.text.toString().toIntOrNull()
-
-            if (n_cartela != null && n_sorteio != null) {
-                when {
-                    n_cartela > 100 -> {
-                        Toast.makeText(this, "O número da cartela não pode ser maior que 100", Toast.LENGTH_SHORT).show()
-                    }
-                    n_sorteio > 25 -> {
-                        Toast.makeText(this, "O números de sorteio não pode ser maior que 25", Toast.LENGTH_SHORT).show()
-                    }
-                    n_sorteio > n_cartela -> {
-                        Toast.makeText(this, "O número de sorteios não pode ser maior que o número da cartela", Toast.LENGTH_SHORT).show()
-                    }
-                    else -> {
-                        val numeros = gerarNumerosUnicos(n_sorteio, n_cartela)
-                        mega.text = numeros.sorted().joinToString(" - ")
-                        gravarDados()
-                    }
-                }
-            } else {
-                Toast.makeText(this, "Preencha os dois campos com números válidos", Toast.LENGTH_SHORT).show()
-            }
+            gerarNumeros()
         }
-
-
+        // Listener para o botão de gerar milhar
         gerarMilhar.setOnClickListener {
-            val mil = Random.nextInt(0, 10000)
-            milhar.text = mil.toString().padStart(4, '0') // Garante 4 dígitos
+            gerarMilharUnica()
         }
     }
 
+    // Função para gerar os números
+    private fun gerarNumeros() {
+        val nCartela = nr_total_cartela.text.toString().toIntOrNull()
+        val nSorteio = nr_sorteados.text.toString().toIntOrNull()
+
+        // Limpar erros anteriores
+        nr_total_cartela.error = null
+        nr_sorteados.error = null
+
+        var houveErro = false
+
+        if (nCartela == null) {
+            nr_total_cartela.error = "Informe um número válido"
+            houveErro = true
+        } else if (nCartela > 100) {
+            nr_total_cartela.error = "O número da cartela não pode ser maior que 100"
+            houveErro = true
+        }
+
+        if (nSorteio == null) {
+            nr_sorteados.error = "Informe um número válido"
+            houveErro = true
+        } else if (nSorteio > 25) {
+            nr_sorteados.error = "O número de sorteios não pode ser maior que 25"
+            houveErro = true
+        }
+
+        if (!houveErro && nCartela != null && nSorteio != null) {
+            if (nSorteio > nCartela) {
+                nr_sorteados.error = "O número de sorteios não pode ser maior que o número da cartela"
+            } else {
+                val numeros = gerarNumerosUnicos(nSorteio, nCartela)
+                jogo.text = numeros.sorted().joinToString(" - ")
+                gravarDados()
+            }
+        }
+    }
+
+
+    // Função para gerar um milhar único
+    private fun gerarMilharUnica() {
+        val mil = Random.nextInt(0, 10000)
+        jogo.text = mil.toString().padStart(4, '0') // Garante 4 dígitos
+    }
+
+    // Função para gerar números únicos
     private fun gerarNumerosUnicos(qtd: Int, maxValor: Int): Set<Int> {
         val numeros = mutableSetOf<Int>()
         while (numeros.size < qtd) {
@@ -71,13 +102,15 @@ class MainActivity : AppCompatActivity() {
         return numeros
     }
 
+    // Função para gravar os dados
     private fun gravarDados() {
         val persistir = PersistirDados(this)
         persistir.gravarString("nr_cartela", nr_total_cartela.text.toString())
         persistir.gravarString("nr_sorteio", nr_sorteados.text.toString())
     }
 
-    private fun recuperarDados(){
+    // Função para recuperar os dados
+    private fun recuperarDados() {
         val recuperar = PersistirDados(this)
 
         nr_total_cartela.setText(recuperar.recuperarString("nr_cartela"))

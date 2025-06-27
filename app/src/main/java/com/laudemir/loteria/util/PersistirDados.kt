@@ -1,4 +1,4 @@
-package com.laudemir.loteria
+package com.laudemir.loteria.util
 
 import android.content.Context
 import android.content.SharedPreferences

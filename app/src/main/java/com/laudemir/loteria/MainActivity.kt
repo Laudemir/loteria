@@ -16,8 +16,6 @@ class MainActivity : AppCompatActivity() {
     private lateinit var gerarMilhar: Button
     private lateinit var nr_total_cartela: EditText
     private lateinit var nr_sorteados: EditText
-    //private lateinit var n_cartela: Int
-    //private lateinit var n_sorteio: Int
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
